@@ -39,7 +39,7 @@ def fit_model(model,normalization_method,x_train,y_train,x_eval,y_eval,labels_na
     acc = pipe.score(x_eval, y_eval)
     print("Accuracy %.5f" %acc)
     print(classification_report(y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
-    plot_confusion_matrix(y_eval,y_pred,labels_name_str,model_name)
+    #plot_confusion_matrix(y_eval,y_pred,labels_name_str,model_name)
     return pipe, y_pred
 
 def plot_grid_search(grid_search):
@@ -77,9 +77,11 @@ def plot_grid_search(grid_search):
 def fit_model_with_grid_search(model,normalization_method,x_train,y_train,x_eval,y_eval,labels_name_str,model_name,grid_search):
     
     grid_search.fit(x_train,y_train)
-    best_estmiator = grid_search.best_estimator_
-    y_pred = best_estmiator.predict(x_eval)
+    best_estimator = grid_search.best_estimator_
+    print(grid_search.best_params_)
+    y_pred = best_estimator.predict(x_eval)
     print(accuracy_score(y_eval,y_pred))
     print(classification_report(y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
-    plot_confusion_matrix(y_eval,y_pred,labels_name_str,model_name)
-    plot_grid_search(grid_search)
+    #plot_confusion_matrix(y_eval,y_pred,labels_name_str,model_name)
+    #plot_grid_search(grid_search)
+    return  best_estimator
