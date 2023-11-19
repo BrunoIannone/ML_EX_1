@@ -1,6 +1,7 @@
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay,accuracy_score
 import matplotlib.pyplot as plt
-
+import seaborn as sns
+import pandas as pd
 def plot_confusion_matrix(y_true,y_pred,labels_name, model_name):
     cm = confusion_matrix(y_true, y_pred,normalize='true')
     disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=labels_name)
