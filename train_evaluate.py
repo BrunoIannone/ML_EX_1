@@ -12,7 +12,6 @@ from utils import plot_confusion_matrix
 
 #model = MultinomialNB().fit(X_train, y_train)
 #
-PATH = os.path.dirname(__file__)
 MODEL = {"svm": svm.SVC(kernel='linear', C=1),"tree": tree.DecisionTreeClassifier()}
 class TrainEvaluate():
 
@@ -25,7 +24,7 @@ class TrainEvaluate():
         
 
 
-    def fit_and_evaluate_model(self,model,normalization_method,labels_name_str,model_name,plot):
+    def fit_and_evaluate_model(self,model,normalization_method,labels_name_str,model_name,plot,plot_save,plot_path,plot_show):
         
         if normalization_method is not None:
             print("Chosen normalization is: ",normalization_method )
@@ -33,8 +32,8 @@ class TrainEvaluate():
             x_eval = normalization_method.transform(self.x_eval)
 
         else:
-            x_train = x_train
-            x_eval = x_eval
+            x_train = self.x_train
+            x_eval = self.x_eval
             print("No normalization chosen")            
         model.fit(x_train, self.y_train)
         
@@ -43,10 +42,10 @@ class TrainEvaluate():
         print("Accuracy %.5f" %acc)
         print(classification_report(self.y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name)
+            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,acc,plot_path,plot_show,plot_save)
         return model,acc
 
-    def fit_and_evaluate_with_grid_search(self,grid_search,normalization_method,labels_name_str,model_name,plot):
+    def fit_and_evaluate_with_grid_search(self,grid_search,normalization_method,labels_name_str,model_name,plot,plot_save,plot_path,plot_show):
         
         if normalization_method is not None:
             print("Chosen normalization is: ",normalization_method )
@@ -65,7 +64,7 @@ class TrainEvaluate():
         print(acc)
         print(classification_report(self.y_eval, y_pred, labels=None, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name)
+            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,acc,plot_path,plot_show,plot_save)
         #plot_grid_search(grid_search)
         return  best_estimator, acc
     
