@@ -4,20 +4,54 @@ import seaborn as sns
 import pandas as pd
 import os
 import warnings
+import numpy as np
 import datetime
+from typing import List
 PATH = os.path.dirname(__file__)
+DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
-def plot_confusion_matrix(y_true, y_pred, labels_name, model_name,accuracy,plot_save_path,plot_show,plot_save):
+
+def plot_confusion_matrix(y_true:np.ndarray, y_pred:np.ndarray, labels_name:List[str], model_name:str,accuracy:float,plot_save_path:str,plot_show:bool,plot_save:bool):
+    """
+    Plot the confusion matrix for a classification model.
+
+    Args:
+    y_true(np.ndarray): Ground truth labels.
+    y_pred(np.ndarray): Predicted labels.
+    labels_name (List[str]): List of label names.
+    model_name (str): Name of the model for display purposes.
+    accuracy (float): Accuracy score of the model.
+    plot_save_path (str): Path to save the confusion matrix plot.
+    plot_show (bool): Whether to display the confusion matrix plot.
+    plot_save (bool): Whether to save the confusion matrix plot.
+
+    Raises:
+    ValueError: If plot_save is set to True but plot_save_path is not specified.
+    ValueError: If y_pred or y_true are not NumPy array.
+
+    Example:
+    >>> labels = ["class1", "class2", "class3"]
+    >>> y_true = ["class1", "class2", "class3", "class1", "class2", "class3"]
+    >>> y_pred = ["class1", "class2", "class3", "class1", "class2", "class2"]
+    >>> model_name = "MyClassifier"
+    >>> accuracy = 0.75
+    >>> plot_confusion_matrix(y_true, y_pred, labels, model_name, accuracy, "path/to/save", True, True)
+    """
+    if not isinstance(y_pred, np.ndarray):
+            raise TypeError("y_pred must be a NumPy array.")
+    if not isinstance(y_true, np.ndarray):
+            raise TypeError("y_true must be a NumPy array.")
     
     if plot_show == None and plot_save == None:
         warnings.warn("Called 'plot_confusion_matrix' but plot_show and plot_save are None",RuntimeWarning)
         return
-    elif plot_save and plot_save_path is None:
+    if plot_save and plot_save_path is None:
         raise ValueError("If plot_save is set to True, plot_save_path must be specified.")
-    elif plot_save is None and plot_save_path:
+    if plot_save is None and plot_save_path:
         warnings.warn("If plot_save is set to False, plot_save_path should not be specified.",RuntimeWarning)
     
-
+    
+    
     cm = confusion_matrix(y_true, y_pred, normalize='true')
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels_name)
     
