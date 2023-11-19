@@ -29,7 +29,7 @@ class DataProcessor():
         labels_set = set()
     
         for label in self.train_labels:
-            labels_set.add(label)
+            labels_set.add(str(label))
             
         return labels_set
     
