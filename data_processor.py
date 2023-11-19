@@ -3,15 +3,17 @@ from sklearn.model_selection import train_test_split
 
 
 class DataProcessor():
+    """
+        Class that implements some methods for data processing
+    """
     
     def __init__(self,train_data_path:str, test_data_path:str,test_size:float,random_state:int) -> None:
-        """Data Processor init function. This class implements some methods for processing data
-
+        """Data Processor init function.
 
         Args:
             train_data_path (str): Path to train data
             test_data_path (str): Path to test data
-            test_size (float): percentage of data to split to evaluation set
+            test_size (float): Percentage of data to split to evaluation set
             random_state (int): seed for random operations
         """
         
@@ -35,8 +37,6 @@ class DataProcessor():
     Returns:
     dict: A dictionary where keys are unique labels and values are the count of each label in the training data.
 
-    Example:
-    If self.train_labels = [1, 2, 1, 3, 2, 1], the function will return {1: 3, 2: 2, 3: 1}.
     """
         
         cnt = {}
@@ -55,8 +55,6 @@ class DataProcessor():
     Returns:
     set: A set containing unique labels converted to strings.
 
-    Example:
-    If self.train_labels = [1, 2, 1, 3, 2, 1], the function will return {'1', '2', '3'}.
     """
         labels_set = set()
     
@@ -73,18 +71,15 @@ class DataProcessor():
 
         Args:
         test_size (float): The proportion of the dataset to include in the test split.
-        random_state (int): Seed used by the random number generator for reproducibility.
+        random_state (int): Percentage of data to split to evaluation set.
 
         Returns:
-        tuple: A tuple containing four numpy arrays - x_train, y_train, x_eval, y_eval - representing the training and evaluation sets,
-            as well as the original training samples, training labels, and test samples.
-
+        tuple: x_train, y_train, x_eval, y_eval, train_samples, train_labels, test_samples
+        
         Raises:
         ValueError: If train_labels is None or if the dimensions of train_samples and train_labels do not match.
 
-        Example:
-        x_train, y_train, x_eval, y_eval, train_samples, train_labels, test_samples = data_load_and_process_data(0.2, 42)
-    
+            
         """
 
         train_samples = self.train_data[0]

@@ -12,9 +12,10 @@ import numpy as np
 from typing import List
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import Normalizer
+
 class TrainEvaluate():
     """
-        Class for train and evaluate a model.
+        Class that implements some methods for training and evaluation
 
     """    
     
@@ -46,7 +47,7 @@ class TrainEvaluate():
 
     def fit_and_evaluate_model(self,model:BaseEstimator,labels_name_str:List[str],model_name:str,plot:bool,plot_save:bool,plot_path:str,plot_show:bool,normalization_method:Normalizer=None):
         """
-        Fit and evaluate a scikit-learn model with optional normalization.
+        Fit and evaluate a scikit-learn model with optional normalization. This function also implements plotting choices
 
         Args:
         model (BaseEstimator): The scikit-learn model to be fitted and evaluated.
@@ -59,19 +60,12 @@ class TrainEvaluate():
         plot_show (bool): Whether to display the confusion matrix plot.
 
         Returns:
-        tuple: A tuple containing the fitted model and the accuracy score.
+        tuple: model, accuracy N.B. the returned model is the fitted one
 
         Raises:
         TypeError: If model is not a valid scikit-learn model or normalization_method is not a valid scikit-learn normalizer.
 
-        Example:
-        >>> from sklearn.linear_model import LogisticRegression
-        >>> from sklearn.preprocessing import StandardScaler
-        >>> train_evaluate = TrainEvaluate()  # Replace with an instance of your class
-        >>> normalization_method = StandardScaler()
-        >>> labels = ["label1", "label2", "label3"]
-        >>> model, accuracy = model.fit_and_evaluate_model(LogisticRegression(), normalization_method, labels, "LogisticRegression", True, True, "path/to/plot", True)
-        """
+       """
         # Check if model is a valid scikit-learn model
 
         if not isinstance(model, BaseEstimator):
@@ -95,19 +89,19 @@ class TrainEvaluate():
         model.fit(x_train, self.y_train)
         
         y_pred = model.predict(x_eval)
-        acc = accuracy_score(self.y_eval, y_pred)
-        print("Accuracy %.5f" %acc)
+        accuracy = accuracy_score(self.y_eval, y_pred)
+        print("Accuracy %.5f" %accuracy)
         print(classification_report(self.y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,acc,plot_path,plot_show,plot_save)
-        return model,acc
+            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,accuracy,plot_path,plot_show,plot_save)
+        return model,accuracy
 
     def fit_and_evaluate_with_grid_search(self,grid_search:GridSearchCV,labels_name_str:List[str],model_name:str,plot:bool,plot_save:str,plot_path:str,plot_show:bool,normalization_method:Normalizer=None):
         """
-        Fit and evaluate a scikit-learn model using grid search with optional normalization.
+        Fit and evaluate a scikit-learn model using grid search with optional normalization.This function also implements plotting choices
 
         Args:
-        grid_search (GridSearchCV): The grid search object with a scikit-learn model and hyperparameter grid.
+        grid_search (GridSearchCV): The grid search object with a scikit-learn model and hyperparameter grid. N.B. This code only works if parameter refit = True
         normalization_method (BaseEstimator): The normalization method from scikit-learn to preprocess the input data.
         labels_name_str (List[str]): List of label names for classification report.
         model_name (str): Name of the model for display purposes.
@@ -117,7 +111,7 @@ class TrainEvaluate():
         plot_show (bool): Whether to display the confusion matrix plot.
 
         Returns:
-        tuple: A tuple containing the best fitted model from grid search and the accuracy score.
+        tuple: model, accuracy N.B. the returned model is the best chosen model.
 
         Raises:
         TypeError: If grid_search is not a valid scikit-learn GridSearchCV object or normalization_method is not a valid scikit-learn normalizer.
@@ -145,11 +139,10 @@ class TrainEvaluate():
         best_estimator = grid_search.best_estimator_
         print("Best model parameters: ", grid_search.best_params_)
         y_pred = best_estimator.predict(x_eval)
-        acc = accuracy_score(self.y_eval,y_pred)
-        print("Accuracy %.5f" %acc)
+        accuracy = accuracy_score(self.y_eval,y_pred)
+        print("Accuracy %.5f" %accuracy)
         print(classification_report(self.y_eval, y_pred, labels=None, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,acc,plot_path,plot_show,plot_save)
-        #plot_grid_search(grid_search)
-        return  best_estimator, acc
+            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,accuracy,plot_path,plot_show,plot_save)
+        return  best_estimator, accuracy
     
