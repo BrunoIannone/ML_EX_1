@@ -38,18 +38,29 @@ print("Creating TrainEvaluate object")
 train_eval = train_evaluate.TrainEvaluate(x_train,y_train,x_eval,y_eval)
 print("Creating TrainEvaluate object done")
 print()
-print("Creating and fitting the model\n")
-model = LogisticRegression(random_state=0, n_jobs=-1)
-normalization_method = None
-train_eval.fit_and_evaluate_model(model = model,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="Logistic Regression",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
-param_grid2 = {
+print("Creating and fitting the model")
+#model = LogisticRegression(random_state=0, n_jobs=-1)
+model = svm.SVC()
+normalization_method = None # preprocessing.MinMaxScaler()
+#train_eval.fit_and_evaluate_model(model = model,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="Logistic Regression",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
+# param_grid_logreg = {
 
    
-    'C': np.arange(0.1, 0.5, 0.1).tolist(),
-    'max_iter':np.arange(300, 400, 100).tolist(),#np.arange(0.8, 2, 0.1).tolist(),#uniform(loc=0, scale=4),
-    'penalty': ['l2'],
-    'solver': ["lbfgs"]
+#     'C': np.arange(0.1, 2, 0.1).tolist(),
+#     'max_iter':np.arange(300, 600, 100).tolist(),#np.arange(0.8, 2, 0.1).tolist(),#uniform(loc=0, scale=4),
+#     'penalty': ['l2'],
+#     'solver': ["sag","saga","lbfgs"]
+# }
+param_grid_svm = {
+
+   
+    'C': np.arange(0.1, 2, 0.1).tolist(),
+    'max_iter':np.arange(300, 600, 100).tolist(),#np.arange(0.8, 2, 0.1).tolist(),#uniform(loc=0, scale=4),
+    'kernel': ["linear", "poly", "rbf", "sigmoid"] ,
+    'gamma': ["scale","auto"],
+    'degree': np.arange(3, 11, 1).tolist(),
+    "random_state": [0]
 }
-grid_search = GridSearchCV(model,param_grid2,scoring='accuracy',n_jobs=-1,verbose=3)
-best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="Logistic Regression",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
+grid_search = GridSearchCV(model,param_grid_svm,scoring='accuracy',n_jobs=-1,verbose=3)
+best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="SVM",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
 print("Fine programma")

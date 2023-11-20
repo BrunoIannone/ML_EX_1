@@ -62,18 +62,11 @@ class TrainEvaluate():
         Returns:
         tuple: model, accuracy N.B. the returned model is the fitted one
 
-        Raises:
-        TypeError: If model is not a valid scikit-learn model or normalization_method is not a valid scikit-learn normalizer.
-
+        
        """
         # Check if model is a valid scikit-learn model
 
-        if not isinstance(model, BaseEstimator):
-            raise TypeError("model must be a valid scikit-learn model.")
-
-        # Check if normalization_method is a valid scikit-learn normalizer
-        if normalization_method != None and not isinstance(normalization_method, Normalizer):
-            raise TypeError("normalization_method must be a valid scikit-learn normalizer.")
+        
 
         if normalization_method is not None:
             print("Chosen normalization is: ", normalization_method)
@@ -113,18 +106,9 @@ class TrainEvaluate():
         Returns:
         tuple: model, accuracy N.B. the returned model is the best chosen model.
 
-        Raises:
-        TypeError: If grid_search is not a valid scikit-learn GridSearchCV object or normalization_method is not a valid scikit-learn normalizer.
-
+        
         """
-         # Check if grid_search is a valid scikit-learn GridSearchCV object
-        if not isinstance(grid_search, GridSearchCV):
-            raise TypeError("grid_search must be a valid scikit-learn GridSearchCV object.")
-
-        # Check if normalization_method is a valid scikit-learn normalizer
-        if normalization_method is not None and not isinstance(normalization_method, BaseEstimator):
-            raise TypeError("normalization_method must be a valid scikit-learn normalizer.")
-
+        
         if normalization_method is not None:
             print("Chosen normalization is: ",normalization_method)
             x_train = normalization_method.fit_transform(self.x_train)
