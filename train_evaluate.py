@@ -11,7 +11,7 @@ from utils import plot_confusion_matrix
 import numpy as np
 from typing import List
 from sklearn.base import BaseEstimator
-from sklearn.preprocessing import Normalizer
+from sklearn.preprocessing import Normalizer,StandardScaler
 from sklearn.decomposition import PCA
 
 class TrainEvaluate():
@@ -73,25 +73,7 @@ class TrainEvaluate():
             print("Chosen normalization is: ", normalization_method)
             x_train = normalization_method.fit_transform(self.x_train)
             x_eval = normalization_method.transform(self.x_eval)
-            pca = PCA(n_components=2,random_state=0)
-            data_2d = pca.fit_transform(x_train)
-
-            # Colora i punti in base alle classi
-            classes = set(self.y_train)
-            scatter = []
-            for class_label in classes:
-                indices = (self.y_train == class_label)
-                scatter.append(plt.scatter(data_2d[indices, 0], data_2d[indices, 1], label=f'Classe {class_label}'))
-
-            # Plotta la legenda
-            plt.legend(handles=scatter, title='Classi', loc='best')
-
-            # Resto del codice per il plot
-            plt.title('PCA: Riduzione della dimensionalità a 2D')
-            plt.xlabel('Prima componente principale')
-            plt.ylabel('Seconda componente principale')
-            plt.show()
-            print("fine")
+            
         else:
             print("No normalization chosen")            
 
@@ -149,4 +131,6 @@ class TrainEvaluate():
         if plot:
             plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,accuracy,plot_path,plot_show,plot_save)
         return  best_estimator, accuracy
+    
+
     

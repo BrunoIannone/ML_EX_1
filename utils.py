@@ -7,6 +7,9 @@ import warnings
 import numpy as np
 import datetime
 from typing import List
+from sklearn.decomposition import PCA
+from sklearn import preprocessing
+
 PATH = os.path.dirname(__file__)
 DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
@@ -66,3 +69,70 @@ def plot_confusion_matrix(y_true:np.ndarray, y_pred:np.ndarray, labels_name:List
     if plot_show:
         plt.show()
 
+
+def plot_decision_boundary(X, y, clf, title, legend_labels=None):
+    h = .02  # Step size in the meshgrid
+    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+
+    xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
+
+    # Predict the class for each point in the meshgrid
+    Z = clf.predict(np.c_[xx.ravel(), yy.ravel()])
+    Z = Z.reshape(xx.shape)
+
+    # Plot the decision boundaries
+    plt.contourf(xx, yy, Z, cmap=plt.cm.Paired, alpha=0.8)
+
+    # Plot the data points
+    scatter = plt.scatter(X[:, 0], X[:, 1], c=y, edgecolors='k', cmap=plt.cm.Paired)
+    
+    # Add legend if legend_labels are provided
+    if legend_labels:
+        plt.legend(handles=scatter.legend_elements()[0], labels=legend_labels)
+    
+    plt.xlabel('Principal Component 1')
+    plt.ylabel('Principal Component 2')
+    plt.title(title)
+    plt.show()
+
+
+def plot_points_with_pca(samples,labels):
+    
+    pca = PCA(n_components=2,random_state=0)
+    data_2d = pca.fit_transform(preprocessing.StandardScaler().fit_transform(samples))
+
+    # Colora i punti in base alle classi
+    classes = set(labels)
+    scatter = []
+    for class_label in classes:
+        indices = (labels == class_label)
+        scatter.append(plt.scatter(data_2d[indices, 0], data_2d[indices, 1], label=f'Classe {class_label}',cmap=plt.cm.Paired,edgecolors='k'))
+
+    # Plotta la legenda
+    plt.legend(handles=scatter, title='Classi', loc='best')
+
+    # Resto del codice per il plot
+    plt.title('PCA: Riduzione della dimensionalità a 2D')
+    plt.xlabel('Prima componente principale')
+    plt.ylabel('Seconda componente principale')
+    plt.show()
+from sklearn.manifold import TSNE
+
+def plot_points_with_pca2(samples,labels,legend_labels = None):
+    
+    pca = PCA(n_components=2)
+    pca_result = pca.fit_transform(samples)
+
+    # Plot the data
+    plt.figure(figsize=(10, 6))
+    scatter = plt.scatter(pca_result[:, 0], pca_result[:, 1], cmap='Paired', c=labels, edgecolors='k')
+
+    # Add legend if legend_labels are provided
+    if legend_labels:
+        plt.legend(handles=scatter.legend_elements()[0], labels=legend_labels)
+
+    plt.title('PCA Visualization of 100-Dimensional Data')
+    plt.xlabel('Dimension 1')
+    plt.ylabel('Dimension 2')
+    plt.show()

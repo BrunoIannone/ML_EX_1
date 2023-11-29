@@ -14,7 +14,7 @@ import numpy as np
 import seaborn as sns
 import pandas as pd
 from scipy.stats import uniform
-from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegression,Perceptron
 from data_processor import DataProcessor
 import utils
 from sklearn.decomposition import PCA
@@ -22,6 +22,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 
+from sklearn.naive_bayes import GaussianNB
 
 
 print("Processing data")
@@ -33,20 +34,28 @@ y_train = data_processor.y_train
 x_eval = data_processor.x_eval
 y_eval = data_processor.y_eval
 
-cnt = data_processor.count_labels()
-print("Labels are: ", sorted(data_processor.labels_name),"\nLabels distribution is:\n", cnt)
+#cnt = data_processor.count_labels()
+#print("Labels are: ", sorted(data_processor.labels_name),"\nLabels distribution is:\n", cnt)
+
+normalization_method = preprocessing.StandardScaler()
+
+utils.plot_points_with_pca2(normalization_method.fit_transform(data_processor.train_samples),data_processor.train_labels,sorted(data_processor.labels_name))
 
 
-# print("Creating TrainEvaluate object")
+print("Creating TrainEvaluate object")
 train_eval = train_evaluate.TrainEvaluate(x_train,y_train,x_eval,y_eval)
 print("Creating TrainEvaluate object done")
 print()
 print("Creating and fitting the model")
+
+
+
 #model = LogisticRegression(random_state=0, n_jobs=-1)
 #model = svm.SVC(random_state=0)
 #model = AdaBoostClassifier(estimator=tree.DecisionTreeClassifier(max_depth=64),n_estimators=100,random_state=0)
 #model = RandomForestClassifier(n_estimators=100,random_state=0,n_jobs=-1, bootstrap=True,max_depth=20,max_leaf_nodes=20)
 #normalization_method = preprocessing.MinMaxScaler()
+model = GaussianNB()
 #log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="Logistic Regression",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
 # param_grid_logreg = {
 
@@ -92,46 +101,23 @@ print("Creating and fitting the model")
 # clf.fit(x_train,y_train)
 # print(accuracy_score(y_eval,clf.predict(x_eval)))
 
-
-
+#utils.plot_points_with_pca(x_train,y_train)
 scaler = preprocessing.StandardScaler()
-X_train_scaled = scaler.fit_transform(train_eval.x_train)
-X_test_scaled = scaler.transform(train_eval.x_eval)
+X_train = scaler.fit_transform(x_train)
+X_test = scaler.transform(x_eval)
+
+# # Apply PCA for dimensionality reduction to 2 components
 pca = PCA(n_components=2)
-X_train_pca = pca.fit_transform(X_train_scaled)
-X_test_pca = pca.transform(X_test_scaled)
+X_train_pca = pca.fit_transform(X_train)
+X_test_pca = pca.transform(X_test)
 
-# Fit logistic regression on the reduced-dimensional data
-logreg = LogisticRegression()
-logreg.fit(X_train_pca, y_train)
+# # Fit a classifier (Support Vector Machine in this example)
+# clf = Perceptron(penalty='l2',n_jobs=-1,random_state=0)#LogisticRegression(max_iter = 500,n_jobs=-1,verbose=3)#svm.SVC(kernel='linear',verbose=3,max_iter=100)
+model.fit(X_train_pca, y_train)
 
-# Plot decision boundaries with 'jet' colormap
-h = .02  # step size in the mesh
 
-x_min, x_max = X_train_pca[:, 0].min() - 1, X_train_pca[:, 0].max() + 1
-y_min, y_max = X_train_pca[:, 1].min() - 1, X_train_pca[:, 1].max() + 1
+# # Plot decision boundaries on the training set
+# utils.plot_decision_boundary(X_train_pca, y_train, clf, 'Decision Boundaries on Training Set')
 
-xx, yy = np.meshgrid(np.arange(x_min, x_max, h), np.arange(y_min, y_max, h))
-
-Z = logreg.predict(np.c_[xx.ravel(), yy.ravel()])
-Z = Z.reshape(xx.shape)
-
-# Create a custom 'jet' colormap
-cmap_jet =plt.cm.get_cmap('Paired', 10)
-
-# Scatter plot of the data points
-plt.figure(figsize=(8, 6))
-# Plot decision boundaries first
-plt.contourf(xx, yy, Z, alpha=0.8,cmap = cmap_jet)
-# Scatter plot of the data points with legend
-scatter = plt.scatter(X_train_pca[:, 0], X_train_pca[:, 1], c=y_train,edgecolors='k', cmap=cmap_jet)
-plt.xlabel('Principal Component 1')
-plt.ylabel('Principal Component 2')
-plt.title('Decision Boundaries with PCA and Logistic Regression')
-
-# Create a legend
-legend_labels = ['Label ' + str(i) for i in range(10)]
-plt.legend(handles=scatter.legend_elements()[0], labels=legend_labels, title='Labels')
-
-plt.show()
-
+# # Plot decision boundaries on the testing set
+utils.plot_decision_boundary(X_test_pca, y_eval, model, 'Decision Boundaries on Testing Set',sorted(data_processor.labels_name))
