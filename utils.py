@@ -71,35 +71,75 @@ def plot_confusion_matrix(y_true:np.ndarray, y_pred:np.ndarray, labels_name:List
     plt.clf()
     plt.close()
 
-def plot_3d_decision_boundaries_gpu(X, y, clf, mesh_size=0.02):
+def plot_3d_decision_boundaries_gpu(X, y, model, mesh_size=0.02):
 
-    x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
-    y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-    xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.1),
-                        np.arange(y_min, y_max, 0.1))
+    coefficients = model.coef_
+    intercepts = model.intercept_
 
-    zz_list = []
+    # Crea una griglia 3D
+    x_vals = np.linspace(X[:, 0].min(), X[:, 0].max(), 100)
+    y_vals = np.linspace(X[:, 1].min(), X[:, 1].max(), 100)
+    x_grid, y_grid = np.meshgrid(x_vals, y_vals)
 
-    # Create a 3D plot using Plotly for each pair of features
-    for i in range(X.shape[1] - 1):
-        zz = (-clf.estimators_[i].intercept_[0] - clf.estimators_[i].coef_[0, 0] * xx - clf.estimators_[i].coef_[0, 1] * yy) / clf.estimators_[i].coef_[0, 2]
-        zz_list.append(zz)
-
-    # Create a 3D plot using Plotly
+    # Crea la figura 3D
     fig = go.Figure()
 
-    # Scatter plot for the data points
-    fig.add_trace(go.Scatter3d(x=X[:, 0], y=X[:, 1], z=X[:, 2], mode='markers', marker=dict(color=y, size=5)))
+    # Aggiungi i punti del dataset con colori diversi per ogni classe
+    for class_idx in range(len(model.classes_)):
+        # Calcola i valori previsti per ogni combinazione di x e y per la classe corrente
+        z_grid = (coefficients[class_idx, 0] * x_grid +
+                coefficients[class_idx, 1] * y_grid +
+                intercepts[class_idx])
 
-    # Surface plots for the decision boundaries
-    for i in range(X.shape[1] - 1):
-        fig.add_trace(go.Surface(x=xx, y=yy, z=zz_list[i], opacity=0.8, colorscale='Viridis'))
+        # Aggiungi una superficie 3D per rappresentare il piano di decisione della classe corrente
+        fig.add_trace(go.Surface(x=x_grid, y=y_grid, z=z_grid, opacity=0.2, colorscale="Viridis", name=f'Class {class_idx}'))
 
-    # Set layout for the plot
-    fig.update_layout(scene=dict(xaxis_title='Feature 1', yaxis_title='Feature 2', zaxis_title='Feature 3'),
-                    margin=dict(l=0, r=0, b=0, t=0))
+        # Aggiungi i punti del dataset per la classe corrente
+        class_points = X[y == class_idx]
+        fig.add_trace(go.Scatter3d(x=class_points[:, 0], y=class_points[:, 1], z=class_points[:, 2],
+                                mode='markers', marker=dict(size=4), name=f'Class {class_idx}'))
 
-    # Show the plot
+    # Aggiungi etichette degli assi
+    fig.update_layout(scene=dict(xaxis_title='Feature 1', yaxis_title='Feature 2', zaxis_title='Feature 3'))
+
+    # Mostra il grafico
+    fig.show()
+
+def plot_3d_decision_boundaries_gpu2(X, y, model, mesh_size=0.02):
+    # Estrai i coefficienti del modello
+    coefficients = model.coef_
+    intercepts = model.intercept_
+
+    # Calcola i punti di intersezione tra i piani di decisione delle diverse classi
+    intersection_points = []
+    for i in range(len(model.classes_)):
+        for j in range(i + 1, len(model.classes_)):
+            coefficients_diff = coefficients[i] - coefficients[j]
+            intercepts_diff = intercepts[i] - intercepts[j]
+            intersection_x = -intercepts_diff / coefficients_diff[0]
+            intersection_y = -intercepts_diff / coefficients_diff[1]
+            intersection_z = -intercepts_diff / coefficients_diff[2]
+            intersection_points.append([intersection_x, intersection_y, intersection_z])
+
+    intersection_points = np.array(intersection_points)
+
+    # Crea la figura 3D
+    fig = go.Figure()
+
+    # Aggiungi la retta di intersezione
+    fig.add_trace(go.Scatter3d(x=intersection_points[:, 0], y=intersection_points[:, 1], z=intersection_points[:, 2],
+                            mode='lines', line=dict(width=5, color='red'), name='Intersection Line'))
+
+    # Aggiungi i punti del dataset con colori diversi per ogni classe
+    for class_idx in range(len(model.classes_)):
+        class_points = X[y == class_idx]
+        fig.add_trace(go.Scatter3d(x=class_points[:, 0], y=class_points[:, 1], z=class_points[:, 2],
+                                mode='markers', marker=dict(size=4), name=f'Class {class_idx}'))
+
+    # Aggiungi etichette degli assi
+    fig.update_layout(scene=dict(xaxis_title='Feature 1', yaxis_title='Feature 2', zaxis_title='Feature 3'))
+
+    # Mostra il grafico
     fig.show()
 
 def plot_decision_boundary(X, y, clf, title, legend_labels=None):
