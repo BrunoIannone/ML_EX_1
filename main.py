@@ -22,11 +22,11 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import RandomForestClassifier
 
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import GaussianNB,BernoulliNB
 
 
 print("Processing data")
-data_processor = DataProcessor(train_data_path=utils.DATA_PATH + "/dataset1.csv",test_data_path=utils.DATA_PATH + "/blind_test2.csv",test_size=0.333, random_state=0)
+data_processor = DataProcessor(train_data_path=utils.DATA_PATH + "/dataset2.csv",test_data_path=utils.DATA_PATH + "/blind_test2.csv",test_size=0.333, random_state=0)
 print("Processing done")
 x_train = data_processor.x_train
 y_train = data_processor.y_train
@@ -39,7 +39,7 @@ y_eval = data_processor.y_eval
 
 normalization_method = preprocessing.StandardScaler()
 
-utils.plot_points_with_pca2(normalization_method.fit_transform(data_processor.train_samples),data_processor.train_labels,sorted(data_processor.labels_name))
+#utils.plot_points_with_pca2(normalization_method.fit_transform(data_processor.train_samples),data_processor.train_labels,sorted(data_processor.labels_name))
 
 
 print("Creating TrainEvaluate object")
@@ -49,14 +49,20 @@ print()
 print("Creating and fitting the model")
 
 
+## MODEL SECTION
 
 #model = LogisticRegression(random_state=0, n_jobs=-1)
 #model = svm.SVC(random_state=0)
 #model = AdaBoostClassifier(estimator=tree.DecisionTreeClassifier(max_depth=64),n_estimators=100,random_state=0)
 #model = RandomForestClassifier(n_estimators=100,random_state=0,n_jobs=-1, bootstrap=True,max_depth=20,max_leaf_nodes=20)
 #normalization_method = preprocessing.MinMaxScaler()
-model = GaussianNB()
-#log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="Logistic Regression",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
+model = LogisticRegression(random_state=0,max_iter=999999)
+
+#log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name=str(model),plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=True)
+
+#  GRID
+
+
 # param_grid_logreg = {
 
    
@@ -95,19 +101,15 @@ model = GaussianNB()
 #grid_search = GridSearchCV(model,param_grid_random_forest,scoring='accuracy',n_jobs=-1,verbose=3)#,random_state=0,n_iter=200)
 #best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method=normalization_method,labels_name_str=data_processor.labels_name,model_name="SVM",plot=True,plot_path=os.path.join(utils.PATH,"plots/"),plot_save=True,plot_show=False)
 
-# clf = AdaBoostClassifier(estimator=LogisticRegression(C=0.1, max_iter=300,solver='saga',verbose=3,n_jobs=-1),n_estimators=100,random_state=0)
-# x_train = normalization_method.fit_transform(x_train)
-# x_eval = normalization_method.transform(x_eval)
-# clf.fit(x_train,y_train)
-# print(accuracy_score(y_eval,clf.predict(x_eval)))
+
 
 #utils.plot_points_with_pca(x_train,y_train)
 scaler = preprocessing.StandardScaler()
 X_train = scaler.fit_transform(x_train)
 X_test = scaler.transform(x_eval)
 
-# # Apply PCA for dimensionality reduction to 2 components
-pca = PCA(n_components=2)
+print("Apply PCA for dimensionality reduction to 2 components")
+pca = PCA(n_components=3)
 X_train_pca = pca.fit_transform(X_train)
 X_test_pca = pca.transform(X_test)
 
@@ -119,5 +121,7 @@ model.fit(X_train_pca, y_train)
 # # Plot decision boundaries on the training set
 # utils.plot_decision_boundary(X_train_pca, y_train, clf, 'Decision Boundaries on Training Set')
 
-# # Plot decision boundaries on the testing set
-utils.plot_decision_boundary(X_test_pca, y_eval, model, 'Decision Boundaries on Testing Set',sorted(data_processor.labels_name))
+print("Plot decision boundaries on the testing set")
+
+#utils.plot_samples_3d_gpu(X_test_pca, y_eval,'Decision Boundaries on Testing Set')#,sorted(data_processor.labels_name))
+utils.plot_3d_decision_boundaries_gpu(X_test_pca,y_eval, model)#,'Decision Boundaries on Testing Set')#,sorted(data_processor.labels_name))
