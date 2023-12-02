@@ -30,7 +30,7 @@ class DataProcessor():
         
         self.labels_name = self._extract_labels()
     
-    def count_labels(self):
+    def count_labels(self,labels_list):
         """
     Count the occurrences of each label in the training data.
 
@@ -40,7 +40,7 @@ class DataProcessor():
     """
         
         cnt = {}
-        for label in self.train_labels:
+        for label in labels_list:
             if label not in cnt:
                 cnt[label] = 1
             else:
@@ -61,7 +61,7 @@ class DataProcessor():
         for label in self.train_labels:
             labels_set.add(str(label))
             
-        return labels_set
+        return sorted(labels_set)
     
 
     def _data_load_and_process_data(self, test_size:float, random_state:int):

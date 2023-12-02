@@ -7,7 +7,7 @@ from sklearn.naive_bayes import BernoulliNB, MultinomialNB
 import seaborn as sns
 import pandas as pd
 from sklearn.model_selection import GridSearchCV
-from utils import plot_confusion_matrix
+from plot_utils import plot_confusion_matrix
 import numpy as np
 from typing import List
 from sklearn.base import BaseEstimator
@@ -46,7 +46,7 @@ class TrainEvaluate():
         
 
 
-    def fit_and_evaluate_model(self,model:BaseEstimator,labels_name_str:List[str],model_name:str,plot:bool,plot_save:bool,plot_path:str,plot_show:bool,normalization_method:Normalizer=None):
+    def fit_and_evaluate_model(self,model:BaseEstimator,model_name:str,plot:bool,plot_save:bool,plot_path:str,plot_show:bool,normalization_method:Normalizer=None,labels_name_str:List[str]=None):
         """
         Fit and evaluate a scikit-learn model with optional normalization. This function also implements plotting choices
 
@@ -87,7 +87,7 @@ class TrainEvaluate():
         print("Accuracy %.5f" %accuracy)
         print(classification_report(self.y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,accuracy,plot_path,plot_show,plot_save)
+            plot_confusion_matrix(self.y_eval,y_pred,model_name,accuracy,plot_path,plot_show,plot_save,labels_name_str)
         return model,accuracy
 
     def fit_and_evaluate_with_grid_search(self,grid_search:GridSearchCV,labels_name_str:List[str],model_name:str,plot:bool,plot_save:str,plot_path:str,plot_show:bool,normalization_method:Normalizer=None):
@@ -127,9 +127,9 @@ class TrainEvaluate():
         y_pred = best_estimator.predict(x_eval)
         accuracy = accuracy_score(self.y_eval,y_pred)
         print("Accuracy %.5f" %accuracy)
-        print(classification_report(self.y_eval, y_pred, labels=None, digits=3))
+        print(classification_report(self.y_eval, y_pred, digits=3))
         if plot:
-            plot_confusion_matrix(self.y_eval,y_pred,labels_name_str,model_name,accuracy,plot_path,plot_show,plot_save)
+            plot_confusion_matrix(y_true=self.y_eval,y_pred=y_pred,model_name=model_name,accuracy=accuracy,plot_save_path=plot_path,plot_show=plot_show,plot_save=plot_save,labels_name=labels_name_str)
         return  best_estimator, accuracy
     
 
