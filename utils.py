@@ -1,13 +1,12 @@
 import numpy as np
 from sklearn.preprocessing import StandardScaler,MinMaxScaler
 from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier
-
 import os
 
 PATH = os.path.dirname(__file__)
 DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
-MODEL = None #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
+MODEL = "LogisticRegression" #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
 NORMALIZATION_METHOD = None #choose between None, StandardScaler(),MinMaxScaler()
 RANDOM_STATE = 0
 N_JOBS = -1

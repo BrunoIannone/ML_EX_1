@@ -173,9 +173,13 @@ def plot_decision_boundary(X, y, clf, title, legend_labels=None):
 
 
 
-def plot_samples_3d_gpu(X, y, title, marker_size=5,show_plot = True, save_plot = False):
+def plot_samples_3d_gpu(X, y,normalization_method, title, marker_size=5,show_plot = True, save_plot = False):
+    
+    
+    pca = PCA(n_components=3)
+    X = pca.fit_transform(normalization_method.fit_transform(X))#x_train 
+
     y = np.reshape(y,(y.shape[0],1))
-    print(y.shape)
     combined_data = np.concatenate([X, y], axis=1)
 
     # Create a pandas DataFrame
