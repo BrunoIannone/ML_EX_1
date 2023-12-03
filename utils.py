@@ -14,6 +14,9 @@ RANDOM_STATE = 0
 N_JOBS = -1
 GRID_SEARCH = False
 
+PLOT_SHOW = False
+PLOT_SAVE = False
+
 #### LR ####
 param_logreg = {
 

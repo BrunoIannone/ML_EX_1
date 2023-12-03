@@ -39,7 +39,7 @@ class TrainEvaluate():
         
 
 
-    def fit_and_evaluate_model(self,model:BaseEstimator,model_name:str,plot:bool,plot_save:bool,plot_path:str,plot_show:bool,normalization_method:Normalizer=None,labels_name_str:List[str]=None):
+    def fit_and_evaluate_model(self,model:BaseEstimator,model_name:str,plot_cm:bool,plot_save:bool,plot_path:str,plot_show:bool,normalization_method:Normalizer=None,labels_name_str:List[str]=None):
         """
         Fit and evaluate a scikit-learn model with optional normalization. This function also implements plotting choices
 
@@ -79,9 +79,9 @@ class TrainEvaluate():
         accuracy = accuracy_score(self.y_eval, y_pred)
         print(colored("Accuracy %.5f","light_cyan") %accuracy)
         print(classification_report(self.y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
-        if plot:
+        if plot_cm:
             plot_confusion_matrix(self.y_eval,y_pred,model_name,accuracy,plot_path,plot_show,plot_save,labels_name_str)
-        return model,accuracy
+        return model
 
     def fit_and_evaluate_with_grid_search(self,grid_search:GridSearchCV,labels_name_str:List[str],model_name:str,plot:bool,plot_save:str,plot_path:str,plot_show:bool,normalization_method:Normalizer=None):
         """
@@ -123,7 +123,7 @@ class TrainEvaluate():
         print(classification_report(self.y_eval, y_pred, digits=3))
         if plot:
             plot_confusion_matrix(y_true=self.y_eval,y_pred=y_pred,model_name=model_name,accuracy=accuracy,plot_save_path=plot_path,plot_show=plot_show,plot_save=plot_save,labels_name=labels_name_str)
-        return  best_estimator, accuracy
+        return  best_estimator
     
 
     
