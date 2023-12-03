@@ -2,11 +2,12 @@
 
 Project Readme
 
-Project Overview
+##Project Overview
 
 Welcome to this machine learning project! This repository contains code for training a model using the main.py file, adjusting hyperparameters and settings in utils.py, and visualizing the dataset with the help of visualization_data.py. Whether you're a seasoned data scientist or just starting, this README will guide you through the project structure and how to make the most out of it.
 
-Files and Usage
+##Files and Usage
+
 1. main.py
 This is the main script for executing the training process.
 To train the model, simply run this script using a Python interpreter (python main.py).
@@ -20,7 +21,7 @@ This file contains functions to visualize the dataset.
 Explore and use the provided plotting functions to gain insights into your data.
 Visualization is crucial for understanding your dataset, and this script is here to assist you in that process.
 
-Adjust Hyperparameters:
+##Adjust Hyperparameters:
 
 Open utils.py and modify hyperparameters and settings as needed.
 Visualize Dataset:
