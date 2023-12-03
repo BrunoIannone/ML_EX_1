@@ -13,6 +13,7 @@ from typing import List
 from sklearn.base import BaseEstimator
 from sklearn.preprocessing import Normalizer,StandardScaler
 from sklearn.decomposition import PCA
+from termcolor import colored
 
 class TrainEvaluate():
     """
@@ -70,12 +71,12 @@ class TrainEvaluate():
         
 
         if normalization_method is not None:
-            print("Chosen normalization is: ", normalization_method)
+            print(colored("Chosen normalization is: ","light_cyan"), colored(normalization_method,"red"))
             x_train = normalization_method.fit_transform(self.x_train)
             x_eval = normalization_method.transform(self.x_eval)
             
         else:
-            print("No normalization chosen")            
+            print(colored("No normalization chosen","light_cyan"))            
 
             x_train = self.x_train
             x_eval = self.x_eval
@@ -84,7 +85,7 @@ class TrainEvaluate():
         
         y_pred = model.predict(x_eval)
         accuracy = accuracy_score(self.y_eval, y_pred)
-        print("Accuracy %.5f" %accuracy)
+        print(colored("Accuracy %.5f","light_cyan") %accuracy)
         print(classification_report(self.y_eval, y_pred, labels=None, target_names=labels_name_str, digits=3))
         if plot:
             plot_confusion_matrix(self.y_eval,y_pred,model_name,accuracy,plot_path,plot_show,plot_save,labels_name_str)
@@ -111,22 +112,22 @@ class TrainEvaluate():
         """
         
         if normalization_method is not None:
-            print("Chosen normalization is: ",normalization_method)
+            print(colored("Chosen normalization is: ","light_cyan"), colored(normalization_method,"red"))
             x_train = normalization_method.fit_transform(self.x_train)
             x_eval = normalization_method.transform(self.x_eval)
             
 
         else:
-            print("No normalization chosen")
+            print(colored("No normalization chosen","light_cyan"))            
             x_train = self.x_train
             x_eval = self.x_eval
 
         grid_search.fit(x_train,self.y_train)
         best_estimator = grid_search.best_estimator_
-        print("Best model parameters: ", grid_search.best_params_)
+        print(colored("Best model parameters: ","light_cyan"), grid_search.best_params_)
         y_pred = best_estimator.predict(x_eval)
         accuracy = accuracy_score(self.y_eval,y_pred)
-        print("Accuracy %.5f" %accuracy)
+        print(colored("Accuracy %.5f","light_cyan") %accuracy)
         print(classification_report(self.y_eval, y_pred, digits=3))
         if plot:
             plot_confusion_matrix(y_true=self.y_eval,y_pred=y_pred,model_name=model_name,accuracy=accuracy,plot_save_path=plot_path,plot_show=plot_show,plot_save=plot_save,labels_name=labels_name_str)

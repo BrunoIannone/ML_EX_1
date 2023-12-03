@@ -7,10 +7,10 @@ PATH = os.path.dirname(__file__)
 DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
 MODEL = "LogisticRegression" #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
-NORMALIZATION_METHOD = None #choose between None, StandardScaler(),MinMaxScaler()
+NORMALIZATION_METHOD = MinMaxScaler() #choose between None, StandardScaler(),MinMaxScaler()
 RANDOM_STATE = 0
 N_JOBS = -1
-GRID_SEARCH = False
+GRID_SEARCH = True
 
 #### LR ####
 param_logreg = {
@@ -25,10 +25,10 @@ param_logreg = {
 
 param_grid_logreg = {
 
-    'C':np.arange(0.1, 2, 0.1).tolist(),
-    'max_iter':np.arange(300, 700, 100).tolist(),
+    'C':[1],#np.arange(0.1, 2, 0.1).tolist(),
+    'max_iter':[100],#np.arange(300, 700, 100).tolist(),
     'penalty': ['l2'],
-    'solver': ["lbfgs","sag","saga"]
+    'solver': ["lbfgs"]#,"sag","saga"]
 }
 #############
 

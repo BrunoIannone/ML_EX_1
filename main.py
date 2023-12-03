@@ -13,7 +13,7 @@ from sklearn.model_selection import  GridSearchCV,RandomizedSearchCV
 from termcolor import colored
 
 print(colored("Starting data processor",'yellow'))
-data_processor = DataProcessor(train_data_path=DATA_PATH + "/dataset1.csv",test_data_path=DATA_PATH + "/blind_test2.csv",test_size=0.333, random_state=0)
+data_processor = DataProcessor(train_data_path=DATA_PATH + "/dataset1.csv",test_data_path=DATA_PATH + "/blind_test2.csv",test_size=0.333, random_state=RANDOM_STATE)
 print(colored("Finished data processing",'green'))
 print()
 
@@ -37,7 +37,7 @@ if MODEL == "LogisticRegression":
     model = LogisticRegression(**param_logreg)
     if GRID_SEARCH:
         print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_logreg,scoring='accuracy',n_jobs=-1,verbose=3)#,random_state=0,n_iter=200)
+        grid_search = GridSearchCV(model,param_grid_logreg,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
         best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
         print(colored("Grid Search finished","green"))
     else:
@@ -50,7 +50,7 @@ elif MODEL == "SVM":
     model = svm.SVC(**param_svm)
     if GRID_SEARCH:
         print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_svm,scoring='accuracy',n_jobs=-1,verbose=3)#,random_state=0,n_iter=200)
+        grid_search = GridSearchCV(model,param_grid_svm,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
         best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
         print(colored("Grid Search finished","green"))
     else:
@@ -65,7 +65,7 @@ elif MODEL == "RandomForest":
 
     if GRID_SEARCH:
         print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_random_forest,scoring='accuracy',n_jobs=-1,verbose=3)#,random_state=0,n_iter=200)
+        grid_search = GridSearchCV(model,param_grid_random_forest,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
         best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
         print(colored("Grid Search finished","green"))
     else:
@@ -80,7 +80,7 @@ else:
     model = CUSTOM_MODEL
     if GRID_SEARCH:
         print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grig_custom_model,scoring='accuracy',n_jobs=-1,verbose=3)#,random_state=0,n_iter=200)
+        grid_search = GridSearchCV(model,param_grig_custom_model,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
         best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
         print(colored("Grid Search finished","green"))
     else:
@@ -88,5 +88,13 @@ else:
         log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
         print(colored("Normal fit finished","green"))
 
-print(colored("Program finished, exiting...", "green"))
 
+# # Plot decision boundaries CPU <-- print
+#plot_utils.plot_decision_boundary(data_processor.train_samples,data_processor.train_labels, clf, 'Decision Boundaries on Training Set')
+
+# # Plot decision boundaries GPU <-- print
+
+#utils.plot_3d_decision_boundaries_gpu(X_test_pca,y_eval, model)#,'Decision Boundaries on Testing Set')#,sorted(data_processor.labels_name))
+
+
+print(colored("Program finished, exiting...", "green"))

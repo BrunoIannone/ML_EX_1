@@ -173,8 +173,20 @@ def plot_decision_boundary(X, y, clf, title, legend_labels=None):
 
 
 
-def plot_samples_3d_gpu(X, y,normalization_method, title, marker_size=5,show_plot = True, save_plot = False):
+def plot_samples_3d_gpu(X, y,normalization_method,plot_save_path=None, marker_size=5,plot_show = True, plot_save = False):
     
+    if not isinstance(X, np.ndarray):
+            raise TypeError("y_pred must be a NumPy array.")
+    if not isinstance(y, np.ndarray):
+            raise TypeError("y_true must be a NumPy array.")
+    
+    if plot_show == None and plot_save == None:
+        warnings.warn("Called 'plot_samples_3d_gpu' but plot_show and plot_save are None",RuntimeWarning)
+        return
+    if plot_save and plot_save_path is None:
+        raise ValueError("If plot_save is set to True, plot_save_path must be specified.")
+    if plot_save is None and plot_save_path:
+        warnings.warn("If plot_save is set to False, plot_save_path should not be specified.",RuntimeWarning)
     
     pca = PCA(n_components=3)
     X = pca.fit_transform(normalization_method.fit_transform(X))#x_train 
@@ -196,12 +208,13 @@ def plot_samples_3d_gpu(X, y,normalization_method, title, marker_size=5,show_plo
     fig.update_layout(legend=dict(title_font_family="Times New Roman",
                               font=dict(size= 30),itemsizing = 'constant'))
 
-    if show_plot:
+    if plot_show:
         fig.show()
-    if save_plot:
-        fig.write_html('interactive_plot.html')
+    if plot_show:
+        fig.write_html(plot_save_path)
 
 def plot_points_with_pca2(samples,labels,legend_labels = None):
+    
     
     pca = PCA(n_components=3)
     pca_result = pca.fit_transform(samples)
