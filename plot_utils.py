@@ -101,7 +101,7 @@ def plot_samples_3d_gpu(X, y,normalization_method,plot_save_path=None, marker_si
 
     if plot_show:
         fig.show()
-    if plot_show:
+    if plot_save:
         fig.write_html(plot_save_path)
 
 
