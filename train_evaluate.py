@@ -1,18 +1,10 @@
-import os
-from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay,accuracy_score
-import matplotlib.pyplot as plt
-from sklearn.pipeline import make_pipeline,Pipeline
-from sklearn import tree,svm
-from sklearn.naive_bayes import BernoulliNB, MultinomialNB
-import seaborn as sns
-import pandas as pd
+from sklearn.metrics import classification_report,accuracy_score
 from sklearn.model_selection import GridSearchCV
 from plot_utils import plot_confusion_matrix
 import numpy as np
 from typing import List
 from sklearn.base import BaseEstimator
-from sklearn.preprocessing import Normalizer,StandardScaler
-from sklearn.decomposition import PCA
+from sklearn.preprocessing import Normalizer
 from termcolor import colored
 
 class TrainEvaluate():

@@ -9,7 +9,6 @@ from sklearn.linear_model import LogisticRegression,Perceptron
 PATH = os.path.dirname(__file__)
 DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
-#MODEL = LogisticRegression(**)#"LogisticRegression" #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
 NORMALIZATION_METHOD = MinMaxScaler() #choose between None, StandardScaler(),MinMaxScaler()
 RANDOM_STATE = 0
 N_JOBS = -1
@@ -77,17 +76,6 @@ param_grid_random_forest = {
     'max_features': ['sqrt'],
     'criterion': ['gini', 'entropy']
 }
-#############
-
-#### CUSTOM MODEL ####
-param_custom_model = {
-    "n_estimators":100
-}
-
-param_grig_custom_model = {
-    "n_estimators" : 100
-}
-CUSTOM_MODEL = RandomForestClassifier(**param_custom_model) #declare here any model that implements sklearn interface
 #############
 
 MODEL = svm.SVC(**param_svm)

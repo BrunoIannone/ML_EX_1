@@ -1,15 +1,8 @@
 from data_processor import DataProcessor
 import train_evaluate
-import plot_utils
 import os
 from utils import *
-from sklearn.preprocessing import StandardScaler,MinMaxScaler
-from sklearn import svm,tree
-from sklearn.svm import LinearSVC 
-from sklearn.linear_model import LogisticRegression,Perceptron
-from sklearn.decomposition import PCA
-from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier
-from sklearn.model_selection import  GridSearchCV,RandomizedSearchCV
+from sklearn.model_selection import  GridSearchCV
 from termcolor import colored
 
 print(colored("Starting data processor",'yellow'))
