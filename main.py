@@ -32,69 +32,18 @@ train_eval = train_evaluate.TrainEvaluate(x_train,y_train,x_eval,y_eval)
 print(colored("TrainEvaluate object created","green"))
 print()
 
-if MODEL == "LogisticRegression":
-    print(colored("Fitting ","yellow") + colored(MODEL,"red"))
-    model = LogisticRegression(**param_logreg)
-    if GRID_SEARCH:
-        print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_logreg,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
-        best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
-        print(colored("Grid Search finished","green"))
-    else:
-        print(colored("Starting Normal fit","yellow"))
-        log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
-        print(colored("Normal fit finished","green"))
 
-elif MODEL == "SVM":
-    print(colored("Fitting ","yellow") + colored(MODEL,"red"))
-    model = svm.SVC(**param_svm)
-    if GRID_SEARCH:
-        print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_svm,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
-        best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
-        print(colored("Grid Search finished","green"))
-    else:
-        print(colored("Starting Normal fit","yellow"))
-        log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
-        print(colored("Normal fit finished","green"))
-
-elif MODEL == "RandomForest":
-    
-    print(colored("Fitting ","yellow") + colored(MODEL,"red"))
-    model = RandomForestClassifier(**param_random_forest)
-
-    if GRID_SEARCH:
-        print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grid_random_forest,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
-        best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
-        print(colored("Grid Search finished","green"))
-    else:
-        print(colored("Starting Normal fit","yellow"))
-        log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
-        print(colored("Normal fit finished","green"))
-
-
+print(colored("Fitting ","yellow") + colored(MODEL.__class__.__name__,"red"))
+model = MODEL
+if GRID_SEARCH:
+    print(colored("Starting Grid Search","yellow"))
+    grid_search = GridSearchCV(model,PARAM_GRID,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
+    best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
+    print(colored("Grid Search finished","green"))
 else:
-    
-    print(colored("Fitting ","yellow") + colored(CUSTOM_MODEL.__class__.__name__,"red"))
-    model = CUSTOM_MODEL
-    if GRID_SEARCH:
-        print(colored("Starting Grid Search","yellow"))
-        grid_search = GridSearchCV(model,param_grig_custom_model,scoring='accuracy',n_jobs=N_JOBS,verbose=3)
-        best_logreg= train_eval.fit_and_evaluate_with_grid_search(grid_search=grid_search,normalization_method = NORMALIZATION_METHOD,labels_name_str=data_processor.labels_name,model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=False)
-        print(colored("Grid Search finished","green"))
-    else:
-        print(colored("Starting Normal fit","yellow"))
-        log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
-        print(colored("Normal fit finished","green"))
-
-
-# # Plot decision boundaries CPU <-- print
-#plot_utils.plot_decision_boundary(data_processor.train_samples,data_processor.train_labels, clf, 'Decision Boundaries on Training Set')
-
-# # Plot decision boundaries GPU <-- print
-
-#utils.plot_3d_decision_boundaries_gpu(X_test_pca,y_eval, model)#,'Decision Boundaries on Testing Set')#,sorted(data_processor.labels_name))
+    print(colored("Starting Normal fit","yellow"))
+    log_reg_model,_=train_eval.fit_and_evaluate_model(model = model,normalization_method = NORMALIZATION_METHOD,labels_name_str=sorted(data_processor.labels_name),model_name=model.__class__.__name__,plot=True,plot_path=os.path.join(PATH,"plots/"),plot_save=True,plot_show=True)
+    print(colored("Normal fit finished","green"))
 
 
 print(colored("Program finished, exiting...", "green"))

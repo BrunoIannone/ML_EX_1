@@ -2,15 +2,18 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler,MinMaxScaler
 from sklearn.ensemble import AdaBoostClassifier,RandomForestClassifier
 import os
+from sklearn import svm,tree
+from sklearn.svm import LinearSVC 
+from sklearn.linear_model import LogisticRegression,Perceptron
 
 PATH = os.path.dirname(__file__)
 DATA_PATH = os.path.join(PATH,"HW1_datasets_public")
 
-MODEL = "LogisticRegression" #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
+#MODEL = LogisticRegression(**)#"LogisticRegression" #choose between "LogisticRegression", "SVM", "AdaBoost", "RandomForest"
 NORMALIZATION_METHOD = MinMaxScaler() #choose between None, StandardScaler(),MinMaxScaler()
 RANDOM_STATE = 0
 N_JOBS = -1
-GRID_SEARCH = True
+GRID_SEARCH = False
 
 #### LR ####
 param_logreg = {
@@ -86,3 +89,6 @@ param_grig_custom_model = {
 }
 CUSTOM_MODEL = RandomForestClassifier(**param_custom_model) #declare here any model that implements sklearn interface
 #############
+
+MODEL = svm.SVC(**param_svm)
+PARAM_GRID = param_grid_svm
