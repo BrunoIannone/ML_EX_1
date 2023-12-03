@@ -1,7 +1,6 @@
 from load_data import load_data
 from sklearn.model_selection import train_test_split
 
-
 class DataProcessor():
     """
         Class that implements some methods for data processing
